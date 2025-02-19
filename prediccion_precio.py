@@ -74,3 +74,41 @@ plt.xlabel('Fecha')
 plt.ylabel('Precio ($)')
 plt.legend()
 plt.show()
+
+
+# Datos de prueba nuevos (por ejemplo, precios de los últimos 3 días)
+new_data = pd.DataFrame({
+    'Prev Close 1': [400],  # Precio de cierre de hace 1 día
+    'Prev Close 2': [405],  # Precio de cierre de hace 2 días
+    'Prev Close 3': [410]   # Precio de cierre de hace 3 días
+})
+
+# Hacer la predicción
+prediction = model.predict(new_data)
+print(f"La predicción para el siguiente día es: {prediction[0]}")
+
+
+
+# Descargar datos más recientes (por ejemplo, desde el 2023-01-01 hasta la fecha actual)
+new_data = yf.download('SPY', start='2023-01-01', end='2023-12-31')
+
+# Procesar los datos de la misma forma que antes
+new_data = new_data[['Close']]
+new_data['Prev Close 1'] = new_data['Close'].shift(1)
+new_data['Prev Close 2'] = new_data['Close'].shift(2)
+new_data['Prev Close 3'] = new_data['Close'].shift(3)
+new_data = new_data.dropna()
+
+# Dividir los nuevos datos en características (X) y el objetivo (y)
+X_new = new_data[['Prev Close 1', 'Prev Close 2', 'Prev Close 3']]
+y_new = new_data['Close']
+
+# Hacer predicciones con el modelo entrenado
+y_new_pred = model.predict(X_new)
+
+# Evaluar el modelo en estos nuevos datos (por ejemplo, usando MSE y R²)
+mse_new = mean_squared_error(y_new, y_new_pred)
+r2_new = r2_score(y_new, y_new_pred)
+
+print(f'MSE en nuevos datos: {mse_new}')
+print(f'R² en nuevos datos: {r2_new}')
