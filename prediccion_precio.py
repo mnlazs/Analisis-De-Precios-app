@@ -5,7 +5,13 @@ from sklearn.linear_model import LinearRegression
 from sklearn.metrics import mean_squared_error, r2_score
 
 # Descargar datos del ETF S&P 500 (SPY) desde 2018
-data = yf.download('SPY', start='2018-01-01', end='2023-01-01')
+data = yf.download('SPY', start='2023-01-01', end='2023-03-01')
+
+#Verificando de si los datos estan vacios
+if data.empty:
+    print("No hay datos disponibles for download. Exiting.")
+    exit()
+
 
 # Mostrar los primeros 5 registros
 print(data.head())
